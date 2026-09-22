@@ -1,0 +1,27 @@
+[project]
+name = "schedule-planner"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "razfleex", email = "razfleexgs@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.20.0",
+    "fastapi>=0.141.1",
+    "pydantic>=2.13.5",
+    "sqlalchemy>=2.0.54",
+]
+
+[project.scripts]
+schedule-planner = "schedule_planner:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.8",
+]
