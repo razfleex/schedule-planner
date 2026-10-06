@@ -1,4 +1,5 @@
 from schedule_planner.catalog_repository import InMemoryRepository
+from schedule_planner.catalog_usage_checker import CatalogUsageChecker
 from schedule_planner.models import Classroom, Group, Subject, Teacher
 
 
@@ -11,8 +12,9 @@ class CatalogService:
         group_repo: InMemoryRepository[Group] | None = None,
         subject_repo: InMemoryRepository[Subject] | None = None,
         classroom_repo: InMemoryRepository[Classroom] | None = None,
+        usage_checker: CatalogUsageChecker | None = None,
     ) -> None:
-        """Инициализирует сервис с репозиториями сущностей."""
+        """Инициализирует сервис с репозиториями и проверкой использования."""
         self._teacher_repo = (
             teacher_repo
             if teacher_repo is not None
@@ -33,6 +35,7 @@ class CatalogService:
             if classroom_repo is not None
             else InMemoryRepository[Classroom]()
         )
+        self._usage_checker = usage_checker
 
     def add_teacher(self, teacher: Teacher) -> Teacher:
         """Добавляет преподавателя в каталог."""
@@ -51,7 +54,10 @@ class CatalogService:
         return self._teacher_repo.update(teacher)
 
     def delete_teacher(self, teacher_id: int) -> None:
-        """Удаляет преподавателя из каталога."""
+        """Удаляет преподавателя, если он не используется в занятиях."""
+        if self._usage_checker is not None:
+            self._usage_checker.ensure_teacher_not_used(teacher_id)
+
         self._teacher_repo.delete(teacher_id)
 
     def add_group(self, group: Group) -> Group:
@@ -71,7 +77,10 @@ class CatalogService:
         return self._group_repo.update(group)
 
     def delete_group(self, group_id: int) -> None:
-        """Удаляет учебную группу из каталога."""
+        """Удаляет учебную группу, если она не используется в занятиях."""
+        if self._usage_checker is not None:
+            self._usage_checker.ensure_group_not_used(group_id)
+
         self._group_repo.delete(group_id)
 
     def add_subject(self, subject: Subject) -> Subject:
@@ -91,7 +100,10 @@ class CatalogService:
         return self._subject_repo.update(subject)
 
     def delete_subject(self, subject_id: int) -> None:
-        """Удаляет дисциплину из каталога."""
+        """Удаляет дисциплину, если она не используется в занятиях."""
+        if self._usage_checker is not None:
+            self._usage_checker.ensure_subject_not_used(subject_id)
+
         self._subject_repo.delete(subject_id)
 
     def add_classroom(self, classroom: Classroom) -> Classroom:
@@ -111,5 +123,8 @@ class CatalogService:
         return self._classroom_repo.update(classroom)
 
     def delete_classroom(self, classroom_id: int) -> None:
-        """Удаляет аудиторию из каталога."""
+        """Удаляет аудиторию, если она не используется в занятиях."""
+        if self._usage_checker is not None:
+            self._usage_checker.ensure_classroom_not_used(classroom_id)
+
         self._classroom_repo.delete(classroom_id)
