@@ -1,4 +1,4 @@
-from typing import Generic, Protocol, TypeVar
+from typing import Protocol
 
 
 class HasId(Protocol):
@@ -7,10 +7,7 @@ class HasId(Protocol):
     id: int
 
 
-T = TypeVar("T", bound=HasId)
-
-
-class InMemoryRepository(Generic[T]):
+class InMemoryRepository[T: HasId]:
     """Универсальное In-Memory хранилище сущностей."""
 
     def __init__(self) -> None:
