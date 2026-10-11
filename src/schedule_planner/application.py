@@ -1,5 +1,6 @@
 from collections.abc import Callable
 
+from schedule_planner.catalog_cli import CatalogCli
 from schedule_planner.catalog_service import CatalogService
 from schedule_planner.catalog_usage_checker import CatalogUsageChecker
 from schedule_planner.conflicts import LessonConflictChain
@@ -38,9 +39,16 @@ def build_role_cli(
         output=output,
     )
 
+    catalog_cli = CatalogCli(
+        catalog_service=catalog_service,
+        input_func=input_func,
+        output=output,
+    )
+
     return RoleCli(
         schedule_cli=schedule_cli,
         lesson_management_cli=lesson_management_cli,
+        catalog_cli=catalog_cli,
         input_func=input_func,
         output=output,
     )

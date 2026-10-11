@@ -1,5 +1,6 @@
 from collections.abc import Callable
 
+from schedule_planner.catalog_cli import CatalogCli
 from schedule_planner.lesson_management_cli import LessonManagementCli
 from schedule_planner.models import Weekday
 from schedule_planner.schedule_cli import ScheduleCli
@@ -12,12 +13,14 @@ class RoleCli:
         self,
         schedule_cli: ScheduleCli,
         lesson_management_cli: LessonManagementCli,
+        catalog_cli: CatalogCli,
         input_func: Callable[[str], str] = input,
         output: Callable[[str], None] = print,
     ) -> None:
         """Создаёт меню ролей с необходимыми CLI-компонентами."""
         self._schedule_cli = schedule_cli
         self._lesson_management_cli = lesson_management_cli
+        self._catalog_cli = catalog_cli
         self._input = input_func
         self._output = output
 
@@ -31,7 +34,6 @@ class RoleCli:
                 "3 — Преподаватель\n"
                 "0 — Выход"
             )
-
             choice = self._input("Выбор: ")
 
             if choice == "1":
@@ -59,9 +61,9 @@ class RoleCli:
                 "6 — Создать занятие\n"
                 "7 — Изменить занятие\n"
                 "8 — Удалить занятие\n"
+                "9 — Управление справочниками\n"
                 "0 — Назад"
             )
-
             choice = self._input("Выбор: ")
 
             if choice == "1":
@@ -88,6 +90,95 @@ class RoleCli:
                 self._lesson_management_cli.update_lesson()
             elif choice == "8":
                 self._lesson_management_cli.delete_lesson()
+            elif choice == "9":
+                self._run_catalog_menu()
+            elif choice == "0":
+                return
+            else:
+                self._output("Ошибка: неизвестный пункт меню.")
+
+    def _run_catalog_menu(self) -> None:
+        """Позволяет Составителю выбрать справочник для редактирования."""
+        catalogs = {
+            "1": (
+                "Преподаватели",
+                self._catalog_cli.show_teachers,
+                self._catalog_cli.add_teacher,
+                self._catalog_cli.update_teacher,
+                self._catalog_cli.delete_teacher,
+            ),
+            "2": (
+                "Учебные группы",
+                self._catalog_cli.show_groups,
+                self._catalog_cli.add_group,
+                self._catalog_cli.update_group,
+                self._catalog_cli.delete_group,
+            ),
+            "3": (
+                "Дисциплины",
+                self._catalog_cli.show_subjects,
+                self._catalog_cli.add_subject,
+                self._catalog_cli.update_subject,
+                self._catalog_cli.delete_subject,
+            ),
+            "4": (
+                "Аудитории",
+                self._catalog_cli.show_classrooms,
+                self._catalog_cli.add_classroom,
+                self._catalog_cli.update_classroom,
+                self._catalog_cli.delete_classroom,
+            ),
+        }
+
+        while True:
+            self._output(
+                "\nУправление справочниками:\n"
+                "1 — Преподаватели\n"
+                "2 — Учебные группы\n"
+                "3 — Дисциплины\n"
+                "4 — Аудитории\n"
+                "0 — Назад"
+            )
+            choice = self._input("Выбор: ")
+
+            if choice == "0":
+                return
+
+            selected = catalogs.get(choice)
+
+            if selected is None:
+                self._output("Ошибка: неизвестный пункт меню.")
+            else:
+                self._run_catalog_entity_menu(*selected)
+
+    def _run_catalog_entity_menu(
+        self,
+        title: str,
+        show: Callable[[], None],
+        add: Callable[[], None],
+        update: Callable[[], None],
+        delete: Callable[[], None],
+    ) -> None:
+        """Предоставляет операции для выбранного справочника."""
+        while True:
+            self._output(
+                f"\n{title}:\n"
+                "1 — Показать список\n"
+                "2 — Добавить\n"
+                "3 — Изменить\n"
+                "4 — Удалить\n"
+                "0 — Назад"
+            )
+            choice = self._input("Выбор: ")
+
+            if choice == "1":
+                show()
+            elif choice == "2":
+                add()
+            elif choice == "3":
+                update()
+            elif choice == "4":
+                delete()
             elif choice == "0":
                 return
             else:
