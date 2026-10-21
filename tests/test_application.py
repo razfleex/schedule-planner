@@ -1,10 +1,12 @@
 import unittest
+from unittest.mock import patch
 
+from schedule_planner import main
 from schedule_planner.application import build_role_cli
 
 
 class ApplicationTests(unittest.TestCase):
-    """Проверяет сборку терминального приложения."""
+    """Проверяет сборку и запуск терминального приложения."""
 
     def test_application_can_start_and_exit(self) -> None:
         """Проверяет запуск главного меню и корректное завершение."""
@@ -60,6 +62,14 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn("Ошибка: Нельзя удалить преподавателя:", text)
         self.assertIn("Занятие 100 удалено.", text)
         self.assertIn("Преподаватель 1 удалён.", text)
+
+    def test_package_entry_point_runs_menu(self) -> None:
+        """Проверяет, что точка входа запускает главное меню."""
+        with patch("schedule_planner.build_role_cli") as factory:
+            main()
+
+        factory.assert_called_once_with()
+        factory.return_value.run.assert_called_once_with()
 
 
 if __name__ == "__main__":
