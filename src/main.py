@@ -1,7 +1,4 @@
-def main() -> None:
-    """Запускает приложение планирования учебного расписания."""
-    print("Schedule Planner")
-
+from schedule_planner import main
 
 if __name__ == "__main__":
     main()
