@@ -50,7 +50,13 @@ class CatalogService:
         return self._teacher_repo.get_all()
 
     def update_teacher(self, teacher: Teacher) -> Teacher:
-        """Обновляет данные преподавателя."""
+        """Обновляет преподавателя с сохранением связей с занятиями."""
+        stored = self._teacher_repo.get_by_id(teacher.id)
+
+        if stored is not None:
+            stored.full_name = teacher.full_name
+            teacher = stored
+
         return self._teacher_repo.update(teacher)
 
     def delete_teacher(self, teacher_id: int) -> None:
@@ -73,7 +79,13 @@ class CatalogService:
         return self._group_repo.get_all()
 
     def update_group(self, group: Group) -> Group:
-        """Обновляет данные учебной группы."""
+        """Обновляет группу с сохранением связей с занятиями."""
+        stored = self._group_repo.get_by_id(group.id)
+
+        if stored is not None:
+            stored.name = group.name
+            group = stored
+
         return self._group_repo.update(group)
 
     def delete_group(self, group_id: int) -> None:
@@ -96,7 +108,13 @@ class CatalogService:
         return self._subject_repo.get_all()
 
     def update_subject(self, subject: Subject) -> Subject:
-        """Обновляет данные дисциплины."""
+        """Обновляет дисциплину с сохранением связей с занятиями."""
+        stored = self._subject_repo.get_by_id(subject.id)
+
+        if stored is not None:
+            stored.name = subject.name
+            subject = stored
+
         return self._subject_repo.update(subject)
 
     def delete_subject(self, subject_id: int) -> None:
@@ -119,7 +137,13 @@ class CatalogService:
         return self._classroom_repo.get_all()
 
     def update_classroom(self, classroom: Classroom) -> Classroom:
-        """Обновляет данные аудитории."""
+        """Обновляет аудиторию с сохранением связей с занятиями."""
+        stored = self._classroom_repo.get_by_id(classroom.id)
+
+        if stored is not None:
+            stored.name = classroom.name
+            classroom = stored
+
         return self._classroom_repo.update(classroom)
 
     def delete_classroom(self, classroom_id: int) -> None:
