@@ -63,33 +63,25 @@ class LessonManagementCli:
         teacher = self._catalog_service.get_teacher_by_id(teacher_id)
 
         if teacher is None:
-            raise ValueError(
-                f"Преподаватель с идентификатором {teacher_id} не найден."
-            )
+            raise ValueError(f"Преподаватель с идентификатором {teacher_id} не найден.")
 
         group_id = self._read_int("ID учебной группы: ")
         group = self._catalog_service.get_group_by_id(group_id)
 
         if group is None:
-            raise ValueError(
-                f"Учебная группа с идентификатором {group_id} не найдена."
-            )
+            raise ValueError(f"Учебная группа с идентификатором {group_id} не найдена.")
 
         subject_id = self._read_int("ID дисциплины: ")
         subject = self._catalog_service.get_subject_by_id(subject_id)
 
         if subject is None:
-            raise ValueError(
-                f"Дисциплина с идентификатором {subject_id} не найдена."
-            )
+            raise ValueError(f"Дисциплина с идентификатором {subject_id} не найдена.")
 
         classroom_id = self._read_int("ID аудитории: ")
         classroom = self._catalog_service.get_classroom_by_id(classroom_id)
 
         if classroom is None:
-            raise ValueError(
-                f"Аудитория с идентификатором {classroom_id} не найдена."
-            )
+            raise ValueError(f"Аудитория с идентификатором {classroom_id} не найдена.")
 
         day = self._read_weekday()
         start_time = self._read_time("Время начала (ЧЧ:ММ): ")
@@ -113,9 +105,7 @@ class LessonManagementCli:
         try:
             return int(value)
         except ValueError as error:
-            raise ValueError(
-                "Идентификатор должен быть целым числом."
-            ) from error
+            raise ValueError("Идентификатор должен быть целым числом.") from error
 
     def _read_weekday(self) -> Weekday:
         """Считывает день недели по его номеру."""
@@ -133,8 +123,7 @@ class LessonManagementCli:
             raise ValueError("Номер дня недели должен быть от 1 до 7.")
 
         return weekdays[day_number - 1]
-    
-    
+
     def _read_time(self, prompt: str) -> time:
         """Считывает время в формате ЧЧ:ММ."""
         value = self._input(prompt)
@@ -142,6 +131,4 @@ class LessonManagementCli:
         try:
             return time.fromisoformat(value)
         except ValueError as error:
-            raise ValueError(
-                "Время должно быть указано в формате ЧЧ:ММ."
-            ) from error
+            raise ValueError("Время должно быть указано в формате ЧЧ:ММ.") from error

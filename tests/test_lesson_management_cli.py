@@ -164,9 +164,7 @@ class LessonManagementCliTests(unittest.TestCase):
         cli.create_lesson()
 
         self.assertIsNone(self.schedule_service.get_lesson(2))
-        self.assertTrue(
-            any(message.startswith("Ошибка:") for message in self.output)
-        )
+        self.assertTrue(any(message.startswith("Ошибка:") for message in self.output))
 
 
 if __name__ == "__main__":

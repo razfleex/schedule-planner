@@ -44,6 +44,5 @@ class CatalogUsageChecker:
         for lesson in self._lesson_repository.get_all():
             if lesson.classroom.id == classroom_id:
                 raise CatalogEntityInUseError(
-                    "Нельзя удалить аудиторию: "
-                    "она используется в существующем занятии."
+                    "Нельзя удалить аудиторию: она используется в существующем занятии."
                 )
