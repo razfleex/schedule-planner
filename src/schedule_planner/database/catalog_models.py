@@ -51,6 +51,13 @@ class GroupORM(Base):
         passive_deletes="all",
     )
 
+    subjects: Mapped[list[SubjectORM]] = relationship(
+        "SubjectORM",
+        secondary="lessons",
+        back_populates="groups",
+        viewonly=True,
+    )
+
 
 class SubjectORM(Base):
     """Хранит сведения о дисциплинах в таблице subjects."""
@@ -70,6 +77,13 @@ class SubjectORM(Base):
         "LessonORM",
         back_populates="subject",
         passive_deletes="all",
+    )
+
+    groups: Mapped[list[GroupORM]] = relationship(
+        "GroupORM",
+        secondary="lessons",
+        back_populates="subjects",
+        viewonly=True,
     )
 
 
