@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from schedule_planner import main
 from schedule_planner.application import build_role_cli
+from schedule_planner.database.connection import SessionLocal
 
 
 class ApplicationTests(unittest.TestCase):
@@ -100,11 +101,13 @@ class ApplicationTests(unittest.TestCase):
         self.assertIn("Преподаватель 1 удалён.", text)
 
     def test_package_entry_point_runs_menu(self) -> None:
-        """Проверяет, что точка входа запускает главное меню."""
+        """Проверяет запуск приложения с постоянным хранением."""
         with patch("schedule_planner.build_role_cli") as factory:
             main()
 
-        factory.assert_called_once_with()
+        factory.assert_called_once_with(
+            session_factory=SessionLocal,
+        )
         factory.return_value.run.assert_called_once_with()
 
 
