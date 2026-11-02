@@ -6,18 +6,19 @@ from sqlalchemy.orm import Session, joinedload
 
 from schedule_planner.database.lesson_mapper import LessonMapper
 from schedule_planner.database.lesson_model import LessonORM
+from schedule_planner.database.session_manager import RepositorySessionManager
 from schedule_planner.models import Lesson
 
 
 class SqlAlchemyLessonRepository:
-    """Репозиторий занятий с хранением в базе данных."""
+    """Репозиторий занятий с поддержкой Unit of Work."""
 
     def __init__(
         self,
-        session_factory: Callable[[], Session],
+        session_factory: Callable[[], Session] | Session,
     ) -> None:
-        """Принимает фабрику сессий SQLAlchemy."""
-        self._session_factory = session_factory
+        """Принимает фабрику сессий или готовую сессию."""
+        self._sessions = RepositorySessionManager(session_factory)
 
     @staticmethod
     def _query():
@@ -31,11 +32,11 @@ class SqlAlchemyLessonRepository:
 
     def add(self, lesson: Lesson) -> None:
         """Добавляет новое занятие."""
-        with self._session_factory() as session:
+        with self._sessions.open() as session:
             session.add(LessonMapper.to_orm(lesson))
 
             try:
-                session.commit()
+                self._sessions.save(session)
             except IntegrityError as error:
                 session.rollback()
                 raise ValueError(
@@ -45,7 +46,7 @@ class SqlAlchemyLessonRepository:
 
     def get_by_id(self, lesson_id: int) -> Lesson | None:
         """Возвращает занятие по ID или None."""
-        with self._session_factory() as session:
+        with self._sessions.open() as session:
             query = self._query().where(
                 LessonORM.id == lesson_id,
             )
@@ -58,7 +59,7 @@ class SqlAlchemyLessonRepository:
 
     def get_all(self) -> list[Lesson]:
         """Возвращает все занятия по возрастанию ID."""
-        with self._session_factory() as session:
+        with self._sessions.open() as session:
             query = self._query().order_by(LessonORM.id)
             orm_lessons = session.scalars(query).all()
 
@@ -66,7 +67,7 @@ class SqlAlchemyLessonRepository:
 
     def update(self, lesson: Lesson) -> None:
         """Обновляет существующее занятие."""
-        with self._session_factory() as session:
+        with self._sessions.open() as session:
             stored = session.get(LessonORM, lesson.id)
 
             if stored is None:
@@ -81,7 +82,7 @@ class SqlAlchemyLessonRepository:
             stored.end_time = lesson.end_time
 
             try:
-                session.commit()
+                self._sessions.save(session)
             except IntegrityError as error:
                 session.rollback()
                 raise ValueError(
@@ -91,11 +92,19 @@ class SqlAlchemyLessonRepository:
 
     def delete(self, lesson_id: int) -> None:
         """Удаляет занятие по ID."""
-        with self._session_factory() as session:
+        with self._sessions.open() as session:
             stored = session.get(LessonORM, lesson_id)
 
             if stored is None:
                 raise ValueError(f"Занятие с идентификатором {lesson_id} не найдено.")
 
             session.delete(stored)
-            session.commit()
+
+            try:
+                self._sessions.save(session)
+            except IntegrityError as error:
+                session.rollback()
+                raise ValueError(
+                    f"Не удалось удалить занятие {lesson_id}: "
+                    "нарушено ограничение базы данных."
+                ) from error
