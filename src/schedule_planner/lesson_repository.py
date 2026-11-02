@@ -37,9 +37,7 @@ class InMemoryLessonRepository:
     def add(self, lesson: Lesson) -> None:
         """Добавляет занятие, если его идентификатор ещё не используется."""
         if lesson.id in self._lessons:
-            raise ValueError(
-                f"Занятие с идентификатором {lesson.id} уже существует."
-            )
+            raise ValueError(f"Занятие с идентификатором {lesson.id} уже существует.")
 
         self._lessons[lesson.id] = lesson
 
@@ -54,17 +52,13 @@ class InMemoryLessonRepository:
     def update(self, lesson: Lesson) -> None:
         """Заменяет данные существующего занятия."""
         if lesson.id not in self._lessons:
-            raise ValueError(
-                f"Занятие с идентификатором {lesson.id} не найдено."
-            )
+            raise ValueError(f"Занятие с идентификатором {lesson.id} не найдено.")
 
         self._lessons[lesson.id] = lesson
 
     def delete(self, lesson_id: int) -> None:
         """Удаляет существующее занятие."""
         if lesson_id not in self._lessons:
-            raise ValueError(
-                f"Занятие с идентификатором {lesson_id} не найдено."
-            )
+            raise ValueError(f"Занятие с идентификатором {lesson_id} не найдено.")
 
         del self._lessons[lesson_id]

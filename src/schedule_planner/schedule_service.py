@@ -18,9 +18,7 @@ class ScheduleService:
     def create_lesson(self, lesson: Lesson) -> None:
         """Создаёт занятие после проверки идентификатора и конфликтов."""
         if self._repository.get_by_id(lesson.id) is not None:
-            raise ValueError(
-                f"Занятие с идентификатором {lesson.id} уже существует."
-            )
+            raise ValueError(f"Занятие с идентификатором {lesson.id} уже существует.")
 
         self._conflict_checker.check(
             lesson,
@@ -39,9 +37,7 @@ class ScheduleService:
     def update_lesson(self, lesson: Lesson) -> None:
         """Изменяет занятие после проверки существования и конфликтов."""
         if self._repository.get_by_id(lesson.id) is None:
-            raise ValueError(
-                f"Занятие с идентификатором {lesson.id} не найдено."
-            )
+            raise ValueError(f"Занятие с идентификатором {lesson.id} не найдено.")
 
         self._conflict_checker.check(
             lesson,
@@ -81,7 +77,5 @@ class ScheduleService:
     def get_lessons_by_day(self, day: Weekday) -> list[Lesson]:
         """Возвращает занятия выбранного дня недели."""
         return [
-            lesson
-            for lesson in self._repository.get_all()
-            if lesson.day_of_week == day
+            lesson for lesson in self._repository.get_all() if lesson.day_of_week == day
         ]

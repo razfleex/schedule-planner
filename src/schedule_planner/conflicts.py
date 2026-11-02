@@ -29,10 +29,7 @@ def _lessons_overlap(first: Lesson, second: Lesson) -> bool:
     if first.day_of_week != second.day_of_week:
         return False
 
-    return (
-        first.start_time < second.end_time
-        and second.start_time < first.end_time
-    )
+    return first.start_time < second.end_time and second.start_time < first.end_time
 
 
 class ConflictHandler(ABC):
@@ -133,10 +130,7 @@ class GroupConflictHandler(ConflictHandler):
 
     def _message(self, existing: Lesson) -> str:
         """Возвращает причину конфликта учебной группы."""
-        return (
-            "Конфликт учебной группы: "
-            f"{existing.group.name} уже занята в это время."
-        )
+        return f"Конфликт учебной группы: {existing.group.name} уже занята в это время."
 
 
 class ClassroomConflictHandler(ConflictHandler):
@@ -159,10 +153,7 @@ class ClassroomConflictHandler(ConflictHandler):
 
     def _message(self, existing: Lesson) -> str:
         """Возвращает причину конфликта аудитории."""
-        return (
-            "Конфликт аудитории: "
-            f"{existing.classroom.name} уже занята в это время."
-        )
+        return f"Конфликт аудитории: {existing.classroom.name} уже занята в это время."
 
 
 class LessonConflictChain:

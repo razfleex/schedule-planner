@@ -150,9 +150,7 @@ class RoleCliTests(unittest.TestCase):
 
     def test_invalid_catalog_action_is_reported(self) -> None:
         """Проверяет сообщение при неправильной команде справочника."""
-        cli = self.make_cli(
-            ["1", "9", "1", "8", "0", "0", "0", "0"]
-        )
+        cli = self.make_cli(["1", "9", "1", "8", "0", "0", "0", "0"])
 
         cli.run()
 

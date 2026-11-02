@@ -23,18 +23,10 @@ class CatalogUpdateIntegrationTests(unittest.TestCase):
         """Создаёт каталог и занятие со связанными объектами."""
         self.catalog_service = CatalogService()
 
-        teacher = self.catalog_service.add_teacher(
-            Teacher(1, "Иванов И. И.")
-        )
-        group = self.catalog_service.add_group(
-            Group(10, "ИВТ-261")
-        )
-        subject = self.catalog_service.add_subject(
-            Subject(20, "Математика")
-        )
-        classroom = self.catalog_service.add_classroom(
-            Classroom(30, "101")
-        )
+        teacher = self.catalog_service.add_teacher(Teacher(1, "Иванов И. И."))
+        group = self.catalog_service.add_group(Group(10, "ИВТ-261"))
+        subject = self.catalog_service.add_subject(Subject(20, "Математика"))
+        classroom = self.catalog_service.add_classroom(Classroom(30, "101"))
 
         self.lesson_repository = InMemoryLessonRepository()
         self.lesson_repository.add(
@@ -52,18 +44,10 @@ class CatalogUpdateIntegrationTests(unittest.TestCase):
 
     def test_updates_preserve_lesson_references(self) -> None:
         """Проверяет сохранение связей после обновления справочников."""
-        self.catalog_service.update_teacher(
-            Teacher(1, "Петров П. П.")
-        )
-        self.catalog_service.update_group(
-            Group(10, "ИВТ-262")
-        )
-        self.catalog_service.update_subject(
-            Subject(20, "Физика")
-        )
-        self.catalog_service.update_classroom(
-            Classroom(30, "202")
-        )
+        self.catalog_service.update_teacher(Teacher(1, "Петров П. П."))
+        self.catalog_service.update_group(Group(10, "ИВТ-262"))
+        self.catalog_service.update_subject(Subject(20, "Физика"))
+        self.catalog_service.update_classroom(Classroom(30, "202"))
 
         lesson = self.lesson_repository.get_all()[0]
 
@@ -91,18 +75,10 @@ class CatalogUpdateIntegrationTests(unittest.TestCase):
 
     def test_updated_names_are_displayed_in_schedule(self) -> None:
         """Проверяет вывод изменённых данных в расписании."""
-        self.catalog_service.update_teacher(
-            Teacher(1, "Петров П. П.")
-        )
-        self.catalog_service.update_group(
-            Group(10, "ИВТ-262")
-        )
-        self.catalog_service.update_subject(
-            Subject(20, "Физика")
-        )
-        self.catalog_service.update_classroom(
-            Classroom(30, "202")
-        )
+        self.catalog_service.update_teacher(Teacher(1, "Петров П. П."))
+        self.catalog_service.update_group(Group(10, "ИВТ-262"))
+        self.catalog_service.update_subject(Subject(20, "Физика"))
+        self.catalog_service.update_classroom(Classroom(30, "202"))
 
         schedule_service = ScheduleService(
             self.lesson_repository,
@@ -119,8 +95,7 @@ class CatalogUpdateIntegrationTests(unittest.TestCase):
         schedule_cli.show_all_lessons()
 
         self.assertIn(
-            "[100] Понедельник 09:00–10:30 | "
-            "ИВТ-262 | Физика | Петров П. П. | 202",
+            "[100] Понедельник 09:00–10:30 | ИВТ-262 | Физика | Петров П. П. | 202",
             output,
         )
 

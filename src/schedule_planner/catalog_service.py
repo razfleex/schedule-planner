@@ -16,19 +16,13 @@ class CatalogService:
     ) -> None:
         """Инициализирует сервис с репозиториями и проверкой использования."""
         self._teacher_repo = (
-            teacher_repo
-            if teacher_repo is not None
-            else InMemoryRepository[Teacher]()
+            teacher_repo if teacher_repo is not None else InMemoryRepository[Teacher]()
         )
         self._group_repo = (
-            group_repo
-            if group_repo is not None
-            else InMemoryRepository[Group]()
+            group_repo if group_repo is not None else InMemoryRepository[Group]()
         )
         self._subject_repo = (
-            subject_repo
-            if subject_repo is not None
-            else InMemoryRepository[Subject]()
+            subject_repo if subject_repo is not None else InMemoryRepository[Subject]()
         )
         self._classroom_repo = (
             classroom_repo
