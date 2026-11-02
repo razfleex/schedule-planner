@@ -1,15 +1,15 @@
 from logging.config import fileConfig
 
 from alembic import context
-from schedule_planner.database.base import Base
 from schedule_planner.database.connection import DATABASE_URL, engine
+from schedule_planner.database.lesson_model import LessonORM
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+target_metadata = LessonORM.metadata
 
 
 def run_migrations_offline() -> None:
