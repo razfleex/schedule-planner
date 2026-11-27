@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from schedule_planner.routers.groups import router as groups_router
 from schedule_planner.routers.teachers import router as teachers_router
 
 app = FastAPI(
@@ -9,6 +10,7 @@ app = FastAPI(
 )
 
 app.include_router(teachers_router)
+app.include_router(groups_router)
 
 
 @app.get("/health", tags=["System"])
